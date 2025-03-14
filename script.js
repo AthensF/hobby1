@@ -6,16 +6,10 @@
  */
 
 (function() {
-    "use strict";
-  
+    "use strict";  
     // Get the extension ID from the URL parameters
     const extensionId = new URLSearchParams(document.currentScript.src.split("?")[1]).get("id");
-  
-    // Notify the extension that the script loaded successfully
-    // L30341 - chrome.runtime.sendMessage(EE, { type: "success" }) in script-learn.js
-    // this busted in first run.  chrome.runtime did not exists.  I'm researching this now:
-    // https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts#host-page-communication
-    
+
     chrome.runtime.sendMessage(extensionId, {
       type: "success"
     });
@@ -48,29 +42,7 @@
         if (/https:\/\/colab.research\.google\.com\/.*/.test(window.location.href)) {
           this.editorPlatform = EditorPlatform.COLAB;
         }
-      }
-  
-      // Get information about the current IDE
-      // getIdeInfo() {
-      //   if (this.editorPlatform === EditorPlatform.COLAB) {
-      //     return {
-      //       ideName: "colab",
-      //       ideVersion: window.colabVersionTag ?? "unknown"
-      //     };
-      //   }
-      //   return {
-      //     ideName: "unknown",
-      //     ideVersion: "unknown"
-      //   };
-      // }
-  
-      // Get the language ID from the editor model
-      // getLanguageId(editorModel) {
-      //   return editorModel.getLanguageIdentifier ? 
-      //     editorModel.getLanguageIdentifier().language : 
-      //     editorModel.getLanguageId();
-      // }
-  
+      }  
       // Provide inline completions for the editor
       async provideInlineCompletions(editor, cursorPosition) {
         // Get the current text in the editor
@@ -113,52 +85,16 @@
             enabled: true
           }
         });
-        
-        // Track editor instance by its URI
-        // const editorUri = editor.getModel()?.uri.toString();
-        // if (editorUri) {
-        //   this.modelUriToEditor.set(editorUri, editor);
-        // }
-        
-        // // Update tracking when editor model changes
-        // editor.onDidChangeModel((modelChange) => {
-        //   const oldUri = modelChange.oldModelUrl?.toString();
-        //   if (oldUri) {
-        //     this.modelUriToEditor.delete(oldUri);
-        //   }
-          
-        //   const newUri = modelChange.newModelUrl?.toString();
-        //   if (newUri) {
-        //     this.modelUriToEditor.set(newUri, editor);
-        //   }
-        // });
       }
   
       // Called when a completion is accepted
       async acceptedCompletion(completionId) {
         console.log(`Completion accepted: ${completionId}`);
-        // You could add telemetry or other logic here
       }
     }
   
     // Patch the Monaco environment to add our ghost text provider
     Object.defineProperties(window, {
-    //   MonacoEnvironment: {
-    //     get() {
-    //       if (!this._ghostText_MonacoEnvironment) {
-    //         this._ghostText_MonacoEnvironment = {
-    //           globalAPI: true
-    //         };
-    //       }
-    //       return this._ghostText_MonacoEnvironment;
-    //     },
-    //     set(value) {
-    //       if (value) {
-    //         value.globalAPI = true;
-    //       }
-    //       this._ghostText_MonacoEnvironment = value;
-    //     }
-    //   },
       monaco: {
         get() {
           return this._ghostText_monaco;
@@ -199,12 +135,4 @@
         }
       }
     });
-  
-    // For Colab specifically, we need to handle the case where Monaco is already loaded
-    if (window.monaco) {
-      const originalMonaco = window.monaco;
-      delete window.monaco;
-      window.monaco = originalMonaco;
-    }
-  
   })();
