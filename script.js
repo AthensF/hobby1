@@ -51,25 +51,25 @@
       }
   
       // Get information about the current IDE
-      getIdeInfo() {
-        if (this.editorPlatform === EditorPlatform.COLAB) {
-          return {
-            ideName: "colab",
-            ideVersion: window.colabVersionTag ?? "unknown"
-          };
-        }
-        return {
-          ideName: "unknown",
-          ideVersion: "unknown"
-        };
-      }
+      // getIdeInfo() {
+      //   if (this.editorPlatform === EditorPlatform.COLAB) {
+      //     return {
+      //       ideName: "colab",
+      //       ideVersion: window.colabVersionTag ?? "unknown"
+      //     };
+      //   }
+      //   return {
+      //     ideName: "unknown",
+      //     ideVersion: "unknown"
+      //   };
+      // }
   
       // Get the language ID from the editor model
-      getLanguageId(editorModel) {
-        return editorModel.getLanguageIdentifier ? 
-          editorModel.getLanguageIdentifier().language : 
-          editorModel.getLanguageId();
-      }
+      // getLanguageId(editorModel) {
+      //   return editorModel.getLanguageIdentifier ? 
+      //     editorModel.getLanguageIdentifier().language : 
+      //     editorModel.getLanguageId();
+      // }
   
       // Provide inline completions for the editor
       async provideInlineCompletions(editor, cursorPosition) {
@@ -115,23 +115,23 @@
         });
         
         // Track editor instance by its URI
-        const editorUri = editor.getModel()?.uri.toString();
-        if (editorUri) {
-          this.modelUriToEditor.set(editorUri, editor);
-        }
+        // const editorUri = editor.getModel()?.uri.toString();
+        // if (editorUri) {
+        //   this.modelUriToEditor.set(editorUri, editor);
+        // }
         
-        // Update tracking when editor model changes
-        editor.onDidChangeModel((modelChange) => {
-          const oldUri = modelChange.oldModelUrl?.toString();
-          if (oldUri) {
-            this.modelUriToEditor.delete(oldUri);
-          }
+        // // Update tracking when editor model changes
+        // editor.onDidChangeModel((modelChange) => {
+        //   const oldUri = modelChange.oldModelUrl?.toString();
+        //   if (oldUri) {
+        //     this.modelUriToEditor.delete(oldUri);
+        //   }
           
-          const newUri = modelChange.newModelUrl?.toString();
-          if (newUri) {
-            this.modelUriToEditor.set(newUri, editor);
-          }
-        });
+        //   const newUri = modelChange.newModelUrl?.toString();
+        //   if (newUri) {
+        //     this.modelUriToEditor.set(newUri, editor);
+        //   }
+        // });
       }
   
       // Called when a completion is accepted
@@ -143,22 +143,22 @@
   
     // Patch the Monaco environment to add our ghost text provider
     Object.defineProperties(window, {
-      MonacoEnvironment: {
-        get() {
-          if (!this._ghostText_MonacoEnvironment) {
-            this._ghostText_MonacoEnvironment = {
-              globalAPI: true
-            };
-          }
-          return this._ghostText_MonacoEnvironment;
-        },
-        set(value) {
-          if (value) {
-            value.globalAPI = true;
-          }
-          this._ghostText_MonacoEnvironment = value;
-        }
-      },
+    //   MonacoEnvironment: {
+    //     get() {
+    //       if (!this._ghostText_MonacoEnvironment) {
+    //         this._ghostText_MonacoEnvironment = {
+    //           globalAPI: true
+    //         };
+    //       }
+    //       return this._ghostText_MonacoEnvironment;
+    //     },
+    //     set(value) {
+    //       if (value) {
+    //         value.globalAPI = true;
+    //       }
+    //       this._ghostText_MonacoEnvironment = value;
+    //     }
+    //   },
       monaco: {
         get() {
           return this._ghostText_monaco;
@@ -173,7 +173,7 @@
           // Register the provider with Monaco
           if (monacoInstance?.languages?.registerInlineCompletionsProvider) {
             setTimeout(() => {
-              // Register for all file types
+              // Register for all file types - Do not remove
               monacoInstance.languages.registerInlineCompletionsProvider({
                 pattern: "**"
               }, ghostTextProvider);
