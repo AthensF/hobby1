@@ -99,7 +99,12 @@
         // No suggestion for other text
         return { items: [] };
       }
-  
+      
+      freeInlineCompletions() {
+        // can I just do this?
+        console.log("Freeing inline completions");
+        return;
+      } 
       // Called when an editor is added
       addEditor(editor) {
         // Enable inline suggestions
